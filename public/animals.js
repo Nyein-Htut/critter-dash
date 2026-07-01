@@ -4,7 +4,6 @@
  * so a single CSS animation system (see styles.css) can drive the run
  * cycle, tail wag, and idle bounce for all six species uniformly.
  */
-
 const ANIMAL_LIST = [
   { key: 'fox', label: 'Fox', emoji: '🦊' },
   { key: 'rabbit', label: 'Rabbit', emoji: '🐰' },
