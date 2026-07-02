@@ -73,7 +73,7 @@ function createRoom(mode) {
     code,
     mode, // 'quick' | 'friends' | 'bot'
     status: 'waiting', // waiting | countdown | racing | finished
-    text: generateRaceText(4),
+    text: generateRaceText(3),
     participants: {},
     hostSocketId: null,
     startTime: null,
