@@ -563,6 +563,9 @@
   // ---------------------------------------------------------------
   // Boot
   // ---------------------------------------------------------------
+  const footerYearEl = $('#footerYear');
+  if (footerYearEl) footerYearEl.textContent = new Date().getFullYear();
+
   if (profile) {
     $('#editProfileBtn').hidden = false;
     identifySocket();
