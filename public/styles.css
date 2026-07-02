@@ -116,7 +116,13 @@ button, input, select { font-family: inherit; }
 /* ---------------- layout ---------------- */
 main#app { position: relative; z-index: 2; max-width: 1080px; margin: 0 auto; padding: 10px 24px 80px; }
 .screen { animation: fadeUp 0.4s ease both; }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+/* Note: the "to" state intentionally omits `transform` (rather than setting
+   translateY(0)) so the animation resolves back to `transform: none`.
+   Any non-none transform value -- even an identity one -- makes an element a
+   containing block for `position: fixed` descendants, which would trap
+   full-screen overlays like #countdownOverlay inside whichever .screen
+   happens to be visible instead of the real viewport. */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; } }
 
 /* ---------------- setup screen ---------------- */
 .setup-card, .lobby-card, .results-card {
@@ -149,6 +155,18 @@ main#app { position: relative; z-index: 2; max-width: 1080px; margin: 0 auto; pa
 }
 .color-swatch:hover { transform: scale(1.1); }
 .color-swatch.selected { border-color: var(--forest); transform: scale(1.12); }
+
+.custom-color-row {
+  display: flex; align-items: center; gap: 10px; margin-top: 14px; cursor: pointer;
+  font-weight: 700; font-size: 0.88rem; color: var(--forest);
+}
+.custom-color-row input[type="color"] {
+  width: 38px; height: 38px; padding: 0; border: 3px solid var(--line); border-radius: 50%;
+  cursor: pointer; background: none; overflow: hidden;
+}
+.custom-color-row input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; border-radius: 50%; }
+.custom-color-row input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; }
+.custom-color-row input[type="color"]::-moz-color-swatch { border: none; border-radius: 50%; }
 
 .setup-preview { display: flex; justify-content: center; margin-top: 28px; height: 90px; }
 .setup-preview svg { width: 130px; height: 100px; }
@@ -254,12 +272,12 @@ main#app { position: relative; z-index: 2; max-width: 1080px; margin: 0 auto; pa
 .lane-runner.finished .critter-svg { filter: drop-shadow(0 0 6px rgba(255,210,63,0.9)); }
 .lane-runner.is-bot .name-bubble { background: #F1EEFF; }
 
-.critter-svg .leg { animation: legSwing var(--run-duration, 0.5s) infinite ease-in-out; transform-box: fill-box; }
+.critter-svg .leg { animation: legSwing var(--run-duration, 0.5s) infinite ease-in-out; }
 .critter-svg .leg.alt { animation-delay: calc(var(--run-duration, 0.5s) / 2); }
 .critter-svg .leg.front-leg { animation-delay: calc(var(--run-duration, 0.5s) / 2); }
 .critter-svg .leg.front-leg.alt { animation-delay: 0s; }
-.critter-svg .tail { animation: tailWag calc(var(--run-duration, 0.5s) * 1.6) infinite ease-in-out; transform-box: fill-box; }
-.critter-svg .ear-flop { animation: earFlop calc(var(--run-duration, 0.5s) * 1.3) infinite ease-in-out; transform-box: fill-box; }
+.critter-svg .tail { animation: tailWag calc(var(--run-duration, 0.5s) * 1.6) infinite ease-in-out; }
+.critter-svg .ear-flop { animation: earFlop calc(var(--run-duration, 0.5s) * 1.3) infinite ease-in-out; }
 .critter-svg .ear-flop.alt { animation-delay: calc(var(--run-duration, 0.5s) * 0.3); }
 .critter-svg.body-bounce { animation: bodyBounce var(--run-duration, 0.5s) infinite ease-in-out; }
 .critter-svg.idle .leg, .critter-svg.idle .tail, .critter-svg.idle .ear-flop { animation-play-state: paused; }
@@ -302,11 +320,15 @@ main#app { position: relative; z-index: 2; max-width: 1080px; margin: 0 auto; pa
 .typing-input:disabled { background: #F4F1EA; }
 
 .countdown-overlay {
-  position: fixed; inset: 0; background: rgba(31,61,43,0.55); display: flex; flex-direction: column;
-  align-items: center; justify-content: center; color: #fff; z-index: 50; gap: 10px;
+  position: fixed; inset: 0; background: rgba(255, 248, 237, 0.35); backdrop-filter: blur(3px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  color: var(--forest); z-index: 50; gap: 6px; pointer-events: none;
 }
+.countdown-overlay p { font-family: var(--font-display); font-weight: 700; color: var(--forest); }
 .countdown-num {
-  font-family: var(--font-display); font-size: 6rem; font-weight: 800; animation: pulseNum 1s ease infinite;
+  font-family: var(--font-display); font-size: 6rem; font-weight: 800; color: var(--coral);
+  text-shadow: 0 4px 0 rgba(255,255,255,0.6), 0 10px 24px rgba(31,61,43,0.25);
+  animation: pulseNum 1s ease infinite;
 }
 @keyframes pulseNum { 0% { transform: scale(0.8); opacity: 0.6; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
 
