@@ -184,6 +184,8 @@
     socket.emit('friends_race:create');
   });
 
+  let joinTimeoutHandle = null;
+
   function joinFriendsRace(code) {
     show('lobby');
     $('#lobbyEyebrow').textContent = 'Race with Friends';
@@ -191,7 +193,18 @@
     $('#inviteBox').hidden = true;
     $('#lobbyHostActions').hidden = true;
     $('#lobbyRacers').innerHTML = '';
-    socket.emit('friends_race:join', { code });
+    $('#lobbyHint').textContent = '';
+
+    clearTimeout(joinTimeoutHandle);
+    joinTimeoutHandle = setTimeout(() => {
+      toast("Couldn't join that race — the code may be wrong or the lobby closed.");
+      goHome();
+    }, 7000);
+
+    whenConnected(() => {
+      identifySocket();
+      socket.emit('friends_race:join', { code: code.toUpperCase() });
+    });
   }
 
   $('#joinCodeBtn').addEventListener('click', () => {
@@ -241,6 +254,11 @@
   const socket = io();
   let currentRoom = null;
 
+  function whenConnected(fn) {
+    if (socket.connected) fn();
+    else socket.once('connect', fn);
+  }
+
   function identifySocket() {
     if (!profile) return;
     socket.emit('identify', { clientId, ...profile });
@@ -250,14 +268,20 @@
     identifySocket();
   });
 
-  socket.on('error', ({ message }) => toast(message || 'Something went wrong.'));
+  socket.on('error', ({ message }) => {
+    clearTimeout(joinTimeoutHandle);
+    toast(message || 'Something went wrong.');
+    if (!screens.lobby.hidden && currentRoom === null) goHome();
+  });
 
   socket.on('race:joined', state => {
+    clearTimeout(joinTimeoutHandle);
     currentRoom = state;
     renderForState(state);
   });
 
   socket.on('race:state', state => {
+    clearTimeout(joinTimeoutHandle);
     currentRoom = state;
     renderForState(state);
   });
