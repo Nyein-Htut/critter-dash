@@ -10,12 +10,19 @@ const SPEED_PRESETS = {
   turbo: { label: 'Turbo', wpm: 90 },
 };
 
+const TICK_MS = 150;
+
 function startBot({ speedKey, text, onProgress, onFinish }) {
   const preset = SPEED_PRESETS[speedKey] || SPEED_PRESETS.steady;
   const totalChars = text.length;
   // Average English word ~= 5 chars. Convert WPM -> chars/sec.
   const baseCharsPerSec = (preset.wpm * 5) / 60;
 
+  // Accumulate fractional characters each tick rather than forcing a whole
+  // character per tick — a hard "at least 1 char per tick" floor would set
+  // an artificial minimum speed (e.g. 1 char / 200ms = 60wpm), which is
+  // exactly what made every preset below Turbo feel identical.
+  let charsAccumulator = 0;
   let typed = 0;
   let stopped = false;
   const startTime = Date.now();
@@ -23,9 +30,9 @@ function startBot({ speedKey, text, onProgress, onFinish }) {
   function tick() {
     if (stopped) return;
     // Natural variance: occasionally a little burst, occasionally a tiny pause.
-    const variance = 0.6 + Math.random() * 0.8; // 0.6x - 1.4x
-    const charsThisTick = Math.max(1, Math.round((baseCharsPerSec / 5) * variance));
-    typed = Math.min(totalChars, typed + charsThisTick);
+    const variance = 0.55 + Math.random() * 0.9; // 0.55x - 1.45x
+    charsAccumulator += baseCharsPerSec * variance * (TICK_MS / 1000);
+    typed = Math.min(totalChars, Math.floor(charsAccumulator));
 
     const elapsedMin = (Date.now() - startTime) / 60000;
     const wpm = elapsedMin > 0 ? Math.round((typed / 5) / elapsedMin) : 0;
@@ -38,10 +45,10 @@ function startBot({ speedKey, text, onProgress, onFinish }) {
       onFinish({ wpm });
       return;
     }
-    setTimeout(tick, 200);
+    setTimeout(tick, TICK_MS);
   }
 
-  const handle = setTimeout(tick, 200);
+  const handle = setTimeout(tick, TICK_MS);
   return () => {
     stopped = true;
     clearTimeout(handle);
