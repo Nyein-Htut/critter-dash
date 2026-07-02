@@ -388,6 +388,17 @@ main#app { position: relative; z-index: 2; max-width: 1080px; margin: 0 auto; pa
 @keyframes toastIn { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
 
 /* ---------------- responsive ---------------- */
+/* ---------------- footer ---------------- */
+.site-footer {
+  position: relative; z-index: 2; text-align: center; padding: 26px 20px 34px;
+  font-size: 0.85rem; color: rgba(43,43,43,0.55);
+}
+.site-footer a {
+  color: var(--forest); font-weight: 700; text-decoration: none; border-bottom: 2px solid var(--coral);
+}
+.site-footer a:hover { color: var(--coral-deep); }
+.site-footer strong { color: var(--forest); }
+
 @media (max-width: 720px) {
   .mode-grid { grid-template-columns: 1fr; }
   .hero { flex-direction: column; text-align: center; }
