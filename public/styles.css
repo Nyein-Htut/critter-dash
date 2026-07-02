@@ -407,6 +407,11 @@ main#app { position: relative; z-index: 2; max-width: 1080px; margin: 0 auto; pa
   .speed-grid { grid-template-columns: 1fr; }
   .typing-stats { gap: 18px; }
   .join-row { max-width: 100%; }
+  .text-display { font-size: 1.02rem; line-height: 1.6; }
+  .typing-panel { padding: 18px 18px; }
+  .lane { height: 60px; margin: 3px 12px; }
+  .lane-runner { width: 50px; height: 42px; }
+  .lane::after { font-size: 1.1rem; }
 }
 
 /* Reduced motion */
