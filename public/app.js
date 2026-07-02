@@ -83,6 +83,7 @@
     row.querySelectorAll('.color-swatch').forEach(btn => {
       btn.addEventListener('click', () => {
         draftColor = btn.dataset.color;
+        $('#customColorInput').value = draftColor;
         renderColorRow();
         renderAnimalGrid();
         renderPreview();
@@ -90,12 +91,20 @@
     });
   }
 
+  $('#customColorInput').addEventListener('input', e => {
+    draftColor = e.target.value;
+    renderColorRow();
+    renderAnimalGrid();
+    renderPreview();
+  });
+
   function renderPreview() {
     $('#setupPreview').innerHTML = getAnimalSVG(draftAnimal, draftColor);
   }
 
   function showSetup() {
     $('#nameInput').value = (profile && profile.name) || '';
+    $('#customColorInput').value = draftColor;
     renderAnimalGrid();
     renderColorRow();
     renderPreview();
