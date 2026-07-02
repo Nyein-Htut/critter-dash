@@ -444,12 +444,14 @@
 
   function renderTextDisplay(typed) {
     const disp = $('#textDisplay');
+    const correctLen = longestCorrectPrefix(typed);
     let html = '';
     for (let i = 0; i < raceText.length; i++) {
       const ch = raceText[i];
       const safeCh = ch === ' ' ? ' ' : escapeHtml(ch);
       let cls = 'ch';
-      if (i < typed.length) cls += typed[i] === ch ? ' correct' : ' incorrect';
+      if (i < correctLen) cls += ' correct';
+      else if (i < typed.length) cls += ' incorrect'; // everything past the first mistake reads as red
       else if (i === typed.length) cls += ' current';
       html += `<span class="${cls}">${safeCh}</span>`;
     }
