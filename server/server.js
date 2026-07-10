@@ -258,6 +258,15 @@ app.get('/race/:code', (req, res) => {
 // Socket.io: real-time race lifecycle
 // ---------------------------------------------------------------------
 
+const FALLBACK_ADJ = ['Swift', 'Zippy', 'Nimble', 'Speedy', 'Breezy', 'Jolly', 'Lucky', 'Perky'];
+const FALLBACK_NOUN = ['Fox', 'Otter', 'Comet', 'Racer', 'Dasher', 'Badger', 'Falcon', 'Nugget'];
+function randomFallbackName() {
+  const adj = FALLBACK_ADJ[Math.floor(Math.random() * FALLBACK_ADJ.length)];
+  const noun = FALLBACK_NOUN[Math.floor(Math.random() * FALLBACK_NOUN.length)];
+  const num = Math.floor(Math.random() * 900) + 100;
+  return `${adj} ${noun} ${num}`;
+}
+
 io.on('connection', socket => {
   let profile = null;
   let currentRoomCode = null;
@@ -265,7 +274,7 @@ io.on('connection', socket => {
   socket.on('identify', payload => {
     profile = {
       clientId: payload.clientId,
-      name: (payload.name || 'Racer').slice(0, 24),
+      name: (payload.name || randomFallbackName()).slice(0, 24),
       animal: payload.animal || 'fox',
       color: payload.color || '#FF6B5C',
     };
