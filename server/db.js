@@ -2,8 +2,9 @@ const { Pool } = require('pg');
 const fs = require('fs');
 const path = require('path');
 
-// Render's managed Postgres provides DATABASE_URL automatically once you
-// attach a database to this web service. Locally, set it in a .env file.
+// Set DATABASE_URL to your Neon Postgres connection string (Neon gives you
+// one when you create a project, e.g. postgresql://user:pass@ep-xxxx.neon.tech/dbname?sslmode=require).
+// Locally, put it in a .env file. Works with any standard Postgres connection string.
 const connectionString = process.env.DATABASE_URL;
 
 let pool = null;
