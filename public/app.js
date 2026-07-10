@@ -86,6 +86,24 @@
     $('#setupPreview').innerHTML = getAnimalSVG(draftAnimal, draftColor);
   }
 
+  const NAME_ADJECTIVES = [
+    'Swift', 'Zippy', 'Turbo', 'Nimble', 'Speedy', 'Dashing', 'Breezy', 'Snappy',
+    'Rapid', 'Jolly', 'Bouncy', 'Sneaky', 'Sunny', 'Lucky', 'Silly', 'Plucky',
+    'Mighty', 'Clever', 'Dizzy', 'Feisty', 'Peppy', 'Wobbly', 'Zesty', 'Perky',
+  ];
+  const NAME_NOUNS = [
+    'Fox', 'Rabbit', 'Panda', 'Turtle', 'Cat', 'Penguin', 'Otter', 'Badger',
+    'Falcon', 'Cheetah', 'Comet', 'Rocket', 'Sprinter', 'Dasher', 'Runner', 'Racer',
+    'Meadow', 'Puddle', 'Noodle', 'Biscuit', 'Pebble', 'Muffin', 'Waffle', 'Nugget',
+  ];
+
+  function generateRandomName() {
+    const adj = NAME_ADJECTIVES[Math.floor(Math.random() * NAME_ADJECTIVES.length)];
+    const noun = NAME_NOUNS[Math.floor(Math.random() * NAME_NOUNS.length)];
+    const num = Math.floor(Math.random() * 900) + 100; // 100-999
+    return `${adj} ${noun} ${num}`;
+  }
+
   function showSetup() {
     $('#nameInput').value = (profile && profile.name) || '';
     $('#customColorInput').value = draftColor;
@@ -96,7 +114,7 @@
   }
 
   $('#saveProfileBtn').addEventListener('click', async () => {
-    const name = $('#nameInput').value.trim() || 'Speedy Racer';
+    const name = $('#nameInput').value.trim() || generateRandomName();
     profile = { name, animal: draftAnimal, color: draftColor };
     localStorage.setItem(LS_PROFILE, JSON.stringify(profile));
     identifySocket();
